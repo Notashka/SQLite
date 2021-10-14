@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         dbHelper = new DBHelper(this);
         database = dbHelper.getWritableDatabase();
-
+        dbHelper.onUpgrade(database,1,dbHelper.DATABASE_VERSION);
         UpdateTable();
     }
 
@@ -145,6 +145,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.btnClear:
                 database.delete(DBHelper.TABLE_CONTACTS, null, null);
+                TableLayout dbOutput = findViewById(R.id.dbtable);
+                dbOutput.removeAllViews();
                 UpdateTable();
                 break;
 

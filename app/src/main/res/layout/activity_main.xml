@@ -7,47 +7,68 @@
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:ignore="MissingConstraints">
 
         <EditText
             android:id="@+id/etName"
-            android:hint="Name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </EditText>
+            android:layout_height="wrap_content"
+            android:hint="Name"></EditText>
 
         <EditText
-            android:id="@+id/etEmail"
-            android:hint="Email"
+            android:id="@+id/etSize"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </EditText>
+            android:layout_height="wrap_content"
+            android:hint="Size"></EditText>
+
+        <EditText
+            android:id="@+id/etStrength"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Strength"></EditText>
+
+        <EditText
+            android:id="@+id/etPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Price"></EditText>
 
         <LinearLayout
+            android:id="@+id/table"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <Button
                 android:id="@+id/btnAdd"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Add">
-            </Button>
-            <Button
-                android:id="@+id/btnRead"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Read">
-            </Button>
+                android:layout_weight="1"
+                android:text="Add"></Button>
+
             <Button
                 android:id="@+id/btnClear"
-                android:layout_width="wrap_content"
+                android:layout_width="0pt"
                 android:layout_height="wrap_content"
-                android:text="Clear">
-            </Button>
+                android:layout_weight="1"
+                android:text="Clear"></Button>
+
         </LinearLayout>
+
     </LinearLayout>
+
+    <TableLayout
+        android:id="@+id/dbtable"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+    </TableLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

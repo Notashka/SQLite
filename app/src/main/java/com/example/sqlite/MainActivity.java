@@ -176,7 +176,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cursorUdater.close();
                 UpdateTable();
                 break;
-        }   }
+           }
+        }
         dbHelper.close();
     }
 }

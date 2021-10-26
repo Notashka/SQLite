@@ -20,13 +20,14 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    Button btnAdd, btnClear;
-    EditText etName, etSize, etStrength, etPrice;
-
+    Button btnAdd, btnClear, btnSum;
+    EditText etName, etPrice;
+    TextView SummaView;
     DBHelper dbHelper;
     SQLiteDatabase database;
     ContentValues contentValues;
@@ -43,13 +44,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnClear.setOnClickListener(this);
 
         etName = (EditText) findViewById(R.id.etName);
-        etSize = (EditText) findViewById(R.id.etSize);
-        etStrength = (EditText) findViewById(R.id.etStrength);
         etPrice = (EditText) findViewById(R.id.etPrice);
+
+        btnSum = (Button) findViewById(R.id.btnSum);
+        btnSum.setOnClickListener(this);
 
         dbHelper = new DBHelper(this);
         database = dbHelper.getWritableDatabase();
-        dbHelper.onUpgrade(database,1,dbHelper.DATABASE_VERSION);
+        dbHelper.onUpgrade(database,2,dbHelper.DATABASE_VERSION);
         UpdateTable();
     }
 
@@ -58,8 +60,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (cursor.moveToFirst()) {
             int idIndex = cursor.getColumnIndex(DBHelper.KEY_ID);
             int nameIndex = cursor.getColumnIndex(DBHelper.KEY_NAME);
-            int sizeIndex = cursor.getColumnIndex(DBHelper.KEY_SIZE);
-            int strengthIndex = cursor.getColumnIndex(DBHelper.KEY_STRENGTH);
             int priceIndex = cursor.getColumnIndex(DBHelper.KEY_PRICE);
 
             TableLayout dbOutput = findViewById(R.id.dbtable);
@@ -82,18 +82,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 outputName.setText(cursor.getString(nameIndex));
                 dbOutputRow.addView(outputName);
 
-                TextView outputSize = new TextView(this);
-                params.weight =1.0f;
-                outputSize.setLayoutParams(params);
-                outputSize.setText(cursor.getString(sizeIndex));
-                dbOutputRow.addView(outputSize);
-
-                TextView outputStrength = new TextView(this);
-                params.weight =1.0f;
-                outputStrength.setLayoutParams(params);
-                outputStrength.setText(cursor.getString(strengthIndex));
-                dbOutputRow.addView(outputStrength);
-
                 TextView outputPrice = new TextView(this);
                 params.weight =1.0f;
                 outputPrice.setLayoutParams(params);
@@ -104,9 +92,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btnDelete.setOnClickListener(this);
                 params.weight = 1.0f;
                 btnDelete.setLayoutParams(params);
-                btnDelete.setText("Удалить запись");
+                btnDelete.setText("Удалить");
                 btnDelete.setId(cursor.getInt(idIndex));
                 dbOutputRow.addView(btnDelete);
+
+                Button btnKorz = new Button(this);
+                btnKorz.setOnClickListener(this);
+                params.weight = 1.0f;
+                btnKorz.setLayoutParams(params);
+                btnKorz.setText("Добавить");
+                btnKorz.setId(cursor.getInt(idIndex));
+                dbOutputRow.addView(btnKorz);
 
                 dbOutput.addView(dbOutputRow);
             }while (cursor.moveToNext());
@@ -123,22 +119,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnAdd:
 
                 String name = etName.getText().toString();
-                String size = etSize.getText().toString();
-                String strength = etStrength.getText().toString();
                 String price = etPrice.getText().toString();
 
                 contentValues = new ContentValues();
 
                 contentValues.put(DBHelper.KEY_NAME, name);
-                contentValues.put(DBHelper.KEY_SIZE, size);
-                contentValues.put(DBHelper.KEY_STRENGTH, strength);
                 contentValues.put(DBHelper.KEY_PRICE, price);
 
                 database.insert(DBHelper.TABLE_CONTACTS, null, contentValues);
 
                 etName.setText("");
-                etSize.setText("");
-                etStrength.setText("");
                 etPrice.setText("");
                 UpdateTable();
                 break;
@@ -151,16 +141,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             default:
-                database.delete(DBHelper.TABLE_CONTACTS,DBHelper.KEY_ID +" = ?", new String[]{String.valueOf(v.getId())});
-                UpdateTable();
+                Button btn = (Button) v;
+                switch (btn.getText().toString()) {
+                    case "Удалить":
+                        View outputDBRow = (View) v.getParent();
+                        ViewGroup outputDB = (ViewGroup) outputDBRow.getParent();
+                        outputDB.removeView(outputDBRow);
+                        outputDB.invalidate();
+                        database.delete(DBHelper.TABLE_CONTACTS,DBHelper.KEY_ID +" = ?", new String[]{String.valueOf(v.getId())});
+                        UpdateTable();
 
                 contentValues = new ContentValues();
                 Cursor cursorUdater = database.query(DBHelper.TABLE_CONTACTS, null, null, null, null, null, null);
                 if (cursorUdater.moveToFirst()) {
                     int idIndex = cursorUdater.getColumnIndex(DBHelper.KEY_ID);
                     int nameIndex = cursorUdater.getColumnIndex(DBHelper.KEY_NAME);
-                    int countryIndex = cursorUdater.getColumnIndex(DBHelper.KEY_SIZE);
-                    int tasteIndex = cursorUdater.getColumnIndex(DBHelper.KEY_STRENGTH);
                     int priceIndex = cursorUdater.getColumnIndex(DBHelper.KEY_PRICE);
                     int realId = 1;
                     do{
@@ -168,11 +163,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         {
                             contentValues.put(DBHelper.KEY_ID, realId);
                             contentValues.put(DBHelper.KEY_NAME, cursorUdater.getString(nameIndex));
-                            contentValues.put(DBHelper.KEY_SIZE, cursorUdater.getString(countryIndex));
-                            contentValues.put(DBHelper.KEY_STRENGTH, cursorUdater.getString(tasteIndex));
                             contentValues.put(DBHelper.KEY_PRICE, cursorUdater.getString(priceIndex));
                             database.replace(DBHelper.TABLE_CONTACTS, null, contentValues);
-
                         }
                         realId++;
                     }while (cursorUdater.moveToNext());
@@ -184,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cursorUdater.close();
                 UpdateTable();
                 break;
-        }
+        }   }
         dbHelper.close();
     }
 }

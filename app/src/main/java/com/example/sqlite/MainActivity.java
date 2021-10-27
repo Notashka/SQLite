@@ -154,11 +154,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Cursor cursor = database.query(DBHelper.TABLE_CONTACTS,null,DBHelper.KEY_ID + "=?",new String[]{String.valueOf(v.getId())}, null, null, null);
                     float sum = Float.parseFloat(VwSumma.getText().toString());
                     if (cursor.moveToFirst()) {
-                        int Price = cursor.getColumnIndex(DBHelper.KEY_PRICE);
-                        do {
-                            sum = sum + cursor.getFloat(Price);
-                        } while (cursor.moveToNext());
-                    }
+                    int Price = cursor.getColumnIndex(DBHelper.KEY_PRICE);
+                    do { sum = sum + cursor.getFloat(Price);
+                        } while (cursor.moveToNext()); }
                     cursor.close();
                     VwSumma.setText(String.valueOf(sum));
                     UpdateTable();

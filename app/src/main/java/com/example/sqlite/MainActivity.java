@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     Button btnAdd, btnClear, btnSum;
     EditText etName, etPrice;
-    TextView SummaView;
+    TextView VwSumma;
     DBHelper dbHelper;
     SQLiteDatabase database;
     ContentValues contentValues;
@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         etName = (EditText) findViewById(R.id.etName);
         etPrice = (EditText) findViewById(R.id.etPrice);
 
+        VwSumma = (TextView) findViewById(R.id.VwSumma);
+        VwSumma.setText("0");
         btnSum = (Button) findViewById(R.id.btnSum);
         btnSum.setOnClickListener(this);
 
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btnKorz.setOnClickListener(this);
                 params.weight = 1.0f;
                 btnKorz.setLayoutParams(params);
-                btnKorz.setText("Добавить");
+                btnKorz.setText("В корзину");
                 btnKorz.setId(cursor.getInt(idIndex));
                 dbOutputRow.addView(btnKorz);
 
@@ -140,16 +142,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 UpdateTable();
                 break;
 
+            case R.id.btnSum:
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Сумма заказа: " +VwSumma.getText() + " руб.", Toast.LENGTH_SHORT);
+                toast.show();
+                VwSumma.setText("0");
+                break;
+
             default:
-                Button btn = (Button) v;
-                switch (btn.getText().toString()) {
-                    case "Удалить":
-                        View outputDBRow = (View) v.getParent();
-                        ViewGroup outputDB = (ViewGroup) outputDBRow.getParent();
-                        outputDB.removeView(outputDBRow);
-                        outputDB.invalidate();
-                        database.delete(DBHelper.TABLE_CONTACTS,DBHelper.KEY_ID +" = ?", new String[]{String.valueOf(v.getId())});
-                        UpdateTable();
+                if(((Button)v).getText() == "В корзину"){
+                    Cursor cursor = database.query(DBHelper.TABLE_CONTACTS,null,DBHelper.KEY_ID + "=?",new String[]{String.valueOf(v.getId())}, null, null, null);
+                    float sum = Float.parseFloat(VwSumma.getText().toString());
+                    if (cursor.moveToFirst()) {
+                        int Price = cursor.getColumnIndex(DBHelper.KEY_PRICE);
+                        do {
+                            sum = sum + cursor.getFloat(Price);
+                        } while (cursor.moveToNext());
+                    }
+                    cursor.close();
+                    VwSumma.setText(String.valueOf(sum));
+                    UpdateTable();
+                }
+
+                if(((Button) v).getText()== "Удалить") {
+                View outputDBRow = (View) v.getParent();
+                ViewGroup outputDB = (ViewGroup) outputDBRow.getParent();
+                outputDB.removeView(outputDBRow);
+                outputDB.invalidate();
+                database.delete(DBHelper.TABLE_CONTACTS,DBHelper.KEY_ID +" = ?", new String[]{String.valueOf(v.getId())});
+                UpdateTable();
 
                 contentValues = new ContentValues();
                 Cursor cursorUdater = database.query(DBHelper.TABLE_CONTACTS, null, null, null, null, null, null);
@@ -168,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                         realId++;
                     }while (cursorUdater.moveToNext());
-                    if(cursorUdater.moveToLast())
+                    if(cursorUdater.moveToLast()&& v.getId()!=realId)
                     {
                         database.delete(DBHelper.TABLE_CONTACTS, DBHelper.KEY_ID + " = ?", new String[]{cursorUdater.getString(idIndex)});
                     }

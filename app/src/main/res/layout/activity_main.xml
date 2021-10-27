@@ -38,7 +38,7 @@
                 android:layout_width="0pt"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Сумма"></TextView>
+                ></TextView>
 
         </LinearLayout>
 
@@ -64,14 +64,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Add"></Button>
+                android:text="Добавить"></Button>
 
             <Button
                 android:id="@+id/btnClear"
                 android:layout_width="0pt"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Clear"></Button>
+                android:text="Очистить"></Button>
 
         </LinearLayout>
 

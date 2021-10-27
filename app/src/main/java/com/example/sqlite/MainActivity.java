@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (cursor.moveToFirst()) {
                     int Price = cursor.getColumnIndex(DBHelper.KEY_PRICE);
                     do { sum = sum + cursor.getFloat(Price);
-                        } while (cursor.moveToNext()); }
+                    } while (cursor.moveToNext()); }
                     cursor.close();
                     VwSumma.setText(String.valueOf(sum));
                     UpdateTable();

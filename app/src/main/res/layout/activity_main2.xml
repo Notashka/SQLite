@@ -13,36 +13,32 @@
         android:orientation="vertical"
         tools:ignore="MissingConstraints">
 
-        <EditText
-            android:id="@+id/etName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Name"></EditText>
-
-        <EditText
-            android:id="@+id/etPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Price"></EditText>
 
         <LinearLayout
-            android:id="@+id/table"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btnAdd"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Добавить"></Button>
-
-            <Button
-                android:id="@+id/btnClear"
+                android:id="@+id/btnSum"
                 android:layout_width="0pt"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Очистить"></Button>
+                android:text="Оформить"></Button>
+
+            <TextView
+                android:id="@+id/VwSum"
+                android:layout_width="0pt"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Сумма:"></TextView>
+
+            <TextView
+                android:id="@+id/VwSumma"
+                android:layout_width="0pt"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                ></TextView>
 
         </LinearLayout>
 

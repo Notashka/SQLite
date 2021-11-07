@@ -3,6 +3,7 @@ package com.example.sqlite;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -25,9 +26,8 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    Button btnAdd, btnClear, btnSum;
+    Button btnAdd, btnClear, btnDB, btnStore;
     EditText etName, etPrice;
-    TextView VwSumma;
     DBHelper dbHelper;
     SQLiteDatabase database;
     ContentValues contentValues;
@@ -46,10 +46,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         etName = (EditText) findViewById(R.id.etName);
         etPrice = (EditText) findViewById(R.id.etPrice);
 
-        VwSumma = (TextView) findViewById(R.id.VwSumma);
-        VwSumma.setText("0");
-        btnSum = (Button) findViewById(R.id.btnSum);
-        btnSum.setOnClickListener(this);
+        btnDB = (Button) findViewById(R.id.btnDB);
+        btnDB.setOnClickListener(this);
+        btnStore = (Button) findViewById(R.id.btnStore);
+        btnStore.setOnClickListener(this);
 
         dbHelper = new DBHelper(this);
         database = dbHelper.getWritableDatabase();
@@ -98,14 +98,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btnDelete.setId(cursor.getInt(idIndex));
                 dbOutputRow.addView(btnDelete);
 
-                Button btnKorz = new Button(this);
-                btnKorz.setOnClickListener(this);
-                params.weight = 1.0f;
-                btnKorz.setLayoutParams(params);
-                btnKorz.setText("В корзину");
-                btnKorz.setId(cursor.getInt(idIndex));
-                dbOutputRow.addView(btnKorz);
-
                 dbOutput.addView(dbOutputRow);
             }while (cursor.moveToNext());
         }
@@ -142,25 +134,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 UpdateTable();
                 break;
 
-            case R.id.btnSum:
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "Сумма заказа: " +VwSumma.getText() + " руб.", Toast.LENGTH_SHORT);
-                toast.show();
-                VwSumma.setText("0");
+            case R.id.btnDB:
                 break;
 
+            case R.id.btnStore:
+                Intent intent2 = new Intent(this,MainActivity2.class);
+                startActivity(intent2);
+                break;
+
+
             default:
-                if(((Button)v).getText() == "В корзину"){
-                    Cursor cursor = database.query(DBHelper.TABLE_CONTACTS,null,DBHelper.KEY_ID + "=?",new String[]{String.valueOf(v.getId())}, null, null, null);
-                    float sum = Float.parseFloat(VwSumma.getText().toString());
-                    if (cursor.moveToFirst()) {
-                    int Price = cursor.getColumnIndex(DBHelper.KEY_PRICE);
-                    do { sum = sum + cursor.getFloat(Price);
-                    } while (cursor.moveToNext()); }
-                    cursor.close();
-                    VwSumma.setText(String.valueOf(sum));
-                    UpdateTable();
-                }
 
                 if(((Button) v).getText()== "Удалить") {
                 View outputDBRow = (View) v.getParent();
